@@ -1,7 +1,7 @@
 	
 
 /**
- * @author YOUR NAME THE STUDENT IN 201
+ * @author Soravit Kitsiriboon
  * 
  * Simulation program for the NBody assignment
  */
@@ -11,94 +11,85 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 public class NBody {
-	
-	/**
-	 * Read the specified file and return the radius
-	 * @param fname is name of file that can be open
-	 * @return the radius stored in the file
-	 * @throws FileNotFoundException if fname cannot be open
-	 */
-	public static double readRadius(String fname) throws FileNotFoundException  {
-		Scanner s = new Scanner(new File(fname));
-	
-		// TODO: read values at beginning of file to
-		// find the radius
-		
-		s.close();
-		
-		// TODO: return radius read
-		return 0;	
-	}
-	
-	/**
-	 * Read all data in file, return array of Celestial Bodies
-	 * read by creating an array of Body objects from data read.
-	 * @param fname is name of file that can be open
-	 * @return array of Body objects read
-	 * @throws FileNotFoundException if fname cannot be open
-	 */
-	public static Body[] readBodies(String fname) throws FileNotFoundException {
-		
-			Scanner s = new Scanner(new File(fname));
-			
-			// TODO: read # bodies, create array, ignore radius
-			int nb = 0; // # bodies to be read
-			
-			for(int k=0; k < nb; k++) {
-				
-				// TODO: read data for each body
-				// construct new body object and add to array
-			}
-			
-			s.close();
-			
-			// TODO: return array of body objects read
-			return null;
-	}
-	public static void main(String[] args) throws FileNotFoundException{
-		double totalTime = 157788000.0;
+
+	public static void main(String[] args) { 
+		double T = 2000000.0;
 		double dt = 25000.0;
-		
-		String fname= "./data/planets.txt";
+		String pfile = "data/planets.txt";
 		if (args.length > 2) {
-			totalTime = Double.parseDouble(args[0]);
+			T = Double.parseDouble(args[0]);
 			dt = Double.parseDouble(args[1]);
-			fname = args[2];
-		}	
-		
-		Body[] bodies = readBodies(fname);
-		double radius = readRadius(fname);
-		
-		StdDraw.setScale(-radius, radius);
-		StdDraw.picture(0,0,"images/starfield.jpg");
-	
-		for(double t = 0.0; t < totalTime; t += dt) {
-			
-			// TODO: create double arrays xforces and yforces
-			// to hold forces on each body
-			
-			// TODO: loop over all bodies, calculate
-			// net forces and store in xforces and yforces
-			
-			// TODO: loop over all bodies and call update
-			// with dt and corresponding xforces, yforces values
-			
-			StdDraw.picture(0,0,"images/starfield.jpg");
-			
-			// TODO: loop over all bodies and call draw on each one
-			
-			StdDraw.show(10);
+			pfile = args[2];
 		}
-		
-		// prints final values after simulation
-		
-		System.out.printf("%d\n", bodies.length);
+		double radius = readRadius(pfile);
+		StdDraw.setScale(-radius, radius);
+		StdDraw.picture(0, 0, "images/starfield.jpg");
+
+		Body[] bodys = readBodies(pfile); 
+		for (int i = 0; i < bodys.length; i++) { //reads file and draws bodys
+			bodys[i].draw();
+		}
+		double time = 0.0;
+		while (time <= T) {
+			double[] xForces = new double[bodys.length];
+			double[] yForces = new double[bodys.length];
+			for (int i = 0; i < bodys.length; i++) {
+				xForces[i] = bodys[i].calcNetForceExertedByX(bodys);
+				yForces[i] = bodys[i].calcNetForceExertedByY(bodys);
+			}
+			for (int i = 0; i < bodys.length; i++) {
+				bodys[i].update(dt, xForces[i], yForces[i]);
+			}
+
+			StdDraw.setScale(-radius, radius); 
+			StdDraw.picture(0, 0, "images/starfield.jpg"); 
+			for (int i = 0; i < bodys.length; i++) {
+				bodys[i].draw(); 
+			}
+			StdDraw.show(10); 
+			time += dt;
+		}
+
+		System.out.printf("%d\n", bodys.length);  
 		System.out.printf("%.2e\n", radius);
-		for (int i = 0; i < bodies.length; i++) {
-		    System.out.printf("%11.4e %11.4e %11.4e %11.4e %11.4e %12s\n",
-		   		              bodies[i].getX(), bodies[i].getY(), 
-		                      bodies[i].getXVel(), bodies[i].getYVel(), 
-		                      bodies[i].getMass(), bodies[i].getName());	
+		for (int i = 0; i < bodys.length; i++) {
+			System.out.printf("%11.4e %11.4e %11.4e %11.4e %11.4e %12s\n", bodys[i].myXPos, bodys[i].myYPos,
+					bodys[i].myXVel, bodys[i].myYVel, bodys[i].myMass, bodys[i].myFileName);
 		}
 	}
+
+	public static double readRadius(String fname) { 
+		File file = new File(fname);
+		Scanner s = null;
+		try {
+			s = new Scanner(file);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		s.nextDouble();
+		return s.nextDouble();
+
+	}
+
+	public static Body[] readBodies(String fname) { 
+		File file = new File(fname);
+		Scanner s = null;
+		try {
+			s = new Scanner(file);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		int arrayNum = s.nextInt();
+		Body[] bodyArray = new Body[arrayNum];
+		s.nextDouble();
+		for (int i = 0; i < arrayNum; i++) {
+			bodyArray[i] = new Body(s.nextDouble(), s.nextDouble(), s.nextDouble(), s.nextDouble(), s.nextDouble(),
+					s.next());
+		}
+
+		return bodyArray;
+	}
+
 }
