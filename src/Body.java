@@ -42,7 +42,7 @@ public double calcForceExertedBy(Body body){
 }
 
 public double calcForceExertedByX(Body p){  
-	double forceX = calcForceExertedBy(body) * (p.myXPos - myXPos) / calcDistance(body);
+	double forceX = calcForceExertedBy(p) * (p.myXPos - myXPos) / calcDistance(p);
 	if (calcDistance(p) == 0){
 		return 0;
 	 }
@@ -50,7 +50,7 @@ public double calcForceExertedByX(Body p){
 }
 
 public double calcForceExertedByY(Body p){  
-	double forceY = calcForceExertedBy(body) * (p.myYPos - myYPos) / calcDistance(body);
+	double forceY = calcForceExertedBy(p) * (p.myYPos - myYPos) / calcDistance(p);
 	if (calcDistance(p) == 0){
 		return 0;
 	 }
