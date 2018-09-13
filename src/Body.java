@@ -28,9 +28,9 @@ public Body(Body p){
 		myFileName = p.myFileName;
 }
 
-public double calcDistance(Body body){
-	double bodyx = myXPos - body.myXPos;
-    double bodyy = myYPos - body.myYPos;
+public double calcDistance(Body b){
+	double bodyx = myXPos - b.myXPos;
+    double bodyy = myYPos - b.myYPos;
     return Math.sqrt(bodyx*bodyx + bodyy*bodyy);
 }
 
@@ -41,35 +41,35 @@ public double calcForceExertedBy(Body body){
 	return force;
 }
 
-public double calcForceExertedByX(Body body){  
-	double forceX = calcForceExertedBy(body) * (body.myXPos - myXPos) / calcDistance(body);
+public double calcForceExertedByX(Body p){  
+	double forceX = calcForceExertedBy(body) * (p.myXPos - myXPos) / calcDistance(body);
 	if (calcDistance(body) == 0){
 		return 0;
 	 }
 	 return forceX;
 }
 
-public double calcForceExertedByY(Body body){  
-	double forceY = calcForceExertedBy(body) * (body.myYPos - myYPos) / calcDistance(body);
+public double calcForceExertedByY(Body p){  
+	double forceY = calcForceExertedBy(body) * (p.myYPos - myYPos) / calcDistance(body);
 	if (calcDistance(body) == 0){
 		return 0;
 	 }
 	return forceY;
 }
-public double calcNetForceExertedByX(Body[] body){ 
+public double calcNetForceExertedByX(Body[] bodies){ 
 	double sum = 0;
-	for (int x=0; x < body.length; ++x){
+	for (int x=0; x < bodies.length; ++x){
 		if (! body.equals(this)) {
 		    sum += calcForceExertedByX(body[x]);
 		}
 	}
 	return sum;
 }
-public double calcNetForceExertedByY(Body[] body){ 
+public double calcNetForceExertedByY(Body[] bodies){ 
 	double sum = 0;
-	for (int y=0; y < body.length; ++y){
-		if (! body.equals(this)) {
-		    sum += calcForceExertedByY(body[y]);
+	for (int y=0; y < bodies.length; ++y){
+		if (! bodies.equals(this)) {
+		    sum += calcForceExertedByY(bodies[y]);
 		}
 
 	}
